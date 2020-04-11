@@ -10,14 +10,15 @@ class Ticket < ApplicationRecord
   private
     def update_stats
       es = self.ticket_type.event.event_stat
-      #ev = self.ticket_type.event.event_venue
+      ev = self.ticket_type.event.event_venue
       # TODO: complete in order to update event stats
-      #unless es.tickets_sold
-      #  es.ticket_sold > ev.capacity
-      #end
-      es.attendance=es.attendance+1
-      es.tickets_sold=es.tickets_sold+1
-      es.save!
+      unless es.tickets_sold >= ev.capacity
+        es.attendance=es.attendance+1
+        es.tickets_sold=es.tickets_sold+1
+        es.save!
+      else
+        raise "Capacity full, Ticket can't be created."
+      end
     end
 
     def update_destroy
